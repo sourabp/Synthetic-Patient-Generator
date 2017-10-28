@@ -52,17 +52,14 @@ public class Generator {
 		int population = Integer.parseInt( Config.get("generate.default_population", "1") );
 		init(population, System.currentTimeMillis());
 	}
-	
 	public Generator(int population) throws IOException
 	{
 		init(population, System.currentTimeMillis());
 	}
-	
 	public Generator(int population, long seed) throws IOException
 	{
 		init(population, seed);
 	}
-	
 	private void init(int population, long seed) throws IOException
 	{
 		String dbType = Config.get("generate.database_type");
@@ -88,6 +85,7 @@ public class Generator {
 		this.random = new Random(seed);
 		this.timestep = Long.parseLong( Config.get("generate.timestep") );
 		this.stop = System.currentTimeMillis();
+		//TODO : Parse the string config as a json string
 		this.demographics = Demographics.loadByName( Config.get("generate.demographics.default_file") );
 		this.logLevel = Config.get("generate.log_patients.detail", "simple");
 		
@@ -101,7 +99,6 @@ public class Generator {
 		CommunityHealthWorker.workers.size(); // ensure CHWs are set early
 		Costs.loadCostData();
 	}
-	
 	public void run()
 	{		
 		ExecutorService threadPool = Executors.newFixedThreadPool(8);

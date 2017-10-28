@@ -71,6 +71,7 @@ public abstract class Exporter
         ZipUtils zipper=new ZipUtils(outputDirectory);
         String zippedOutputLocation=Config.get("exporter.zippedOutputLocation");
         zipper.zipIt(zippedOutputLocation);
+        AWSS3Exporter.export(zippedOutputLocation);
         try {
             FileUtils.deleteDirectory(outputDirectory);
         }catch (java.io.IOException e){
