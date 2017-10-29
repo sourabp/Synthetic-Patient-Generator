@@ -19,7 +19,7 @@ import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.Organization;
 import org.hl7.fhir.dstu3.model.Resource;
-import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.LocalConfig;
 import org.mitre.synthea.world.agents.Hospital;
 import org.mitre.synthea.world.agents.Provider;
 
@@ -34,7 +34,7 @@ public abstract class HospitalExporter{
 	private static final String SYNTHEA_URI = "http://synthetichealth.github.io/synthea/";
 	
 	public static void export(long stop){
-		if(Boolean.parseBoolean(Config.get("exporter.hospital.fhir.export"))){
+		if(Boolean.parseBoolean(LocalConfig.get("exporter.hospital.fhir.export"))){
 			
 			Bundle bundle = new Bundle();
 			for(Hospital h : Hospital.getHospitalList()){
@@ -53,7 +53,7 @@ public abstract class HospitalExporter{
 			// get output folder
 			List<String> folders = new ArrayList<>();
 			folders.add("fhir");
-			String baseDirectory = Config.get("exporter.baseDirectory");
+			String baseDirectory = LocalConfig.get("exporter.baseDirectory");
 			File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
 			f.mkdirs();
 			Path outFilePath = f.toPath().resolve("hospitalInformation" + stop + ".json");

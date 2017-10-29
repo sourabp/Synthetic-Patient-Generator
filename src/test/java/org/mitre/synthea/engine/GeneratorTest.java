@@ -4,8 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
-import org.mitre.synthea.engine.Generator;
-import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.LocalConfig;
 
 public class GeneratorTest {
     @Test public void testGeneratorCreatesPeople() throws Exception {
@@ -18,7 +17,7 @@ public class GeneratorTest {
         
         
         numberOfPeople = 3;
-    	Config.set("generate.default_population", Integer.toString(numberOfPeople));
+    	LocalConfig.set("generate.default_population", Integer.toString(numberOfPeople));
         generator = new Generator();
         generator.run();
         assertEquals(numberOfPeople, generator.stats.get("alive").longValue());

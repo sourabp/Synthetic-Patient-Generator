@@ -15,8 +15,11 @@ buildscript {
     }
 }
 
-apply plugin: "io.spring.dependency-management"
+version = '0.1.0.0'
+def artifactId = projectDir.name
+def versionNumber = version
 
+apply plugin: "io.spring.dependency-management"
 
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
@@ -24,7 +27,7 @@ apply plugin: 'java'
 // Apply the application plugin to add support for building an application
 apply plugin: 'application'
 
-apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -74,6 +77,25 @@ dependencies {
     testCompile fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
 	testCompile 'org.mockito:mockito-core:2.7.22'
 }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId 'com.innovaccer.analytics'
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username 'admin'
+                password 'sparkyourlife'
+            }
+            url "http://lib.innovaccer.com:8081/artifactory/gradle-local"
+        }
+    }
+}
+
+
 
 task graphviz(type: JavaExec) {
 	description 'Generate rule visualization'

@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
 
-public abstract class Config
+public abstract class LocalConfig
 {
   private static Properties properties = new Properties();
 
@@ -16,8 +16,8 @@ public abstract class Config
   {
     try
     {
-      load(Config.class
-          .getResourceAsStream("/synthea.properties"));
+      load(LocalConfig.class
+          .getResourceAsStream("/patientgen.properties"));
     } catch (IOException e)
     {
       System.err.println("Unable to load default properties file");

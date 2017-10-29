@@ -2,26 +2,23 @@ package org.mitre.synthea.export;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
-import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.services.s3.transfer.Upload;
 
 import java.io.File;
 import java.util.Iterator;
-import java.util.List;
 
-import org.mitre.synthea.helpers.Config;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import org.mitre.synthea.helpers.LocalConfig;
 
 public class AWSS3Exporter {
-    public static void export(String exportPath){
-        String bucketName=Config.get("bucket");
-        String keyName=Config.get("zippedOutputName");
+    public static String export(String exportPath){
+        String bucketName= LocalConfig.get("bucket");
+        String keyName= LocalConfig.get("zippedOutputName");
 
         AWSCredentials awsCredentials=new ProfileCredentialsProvider().getCredentials();
+        TransferManager transferManager=new TransferManager(awsCredentials);
         AmazonS3Client s3Client=new AmazonS3Client(awsCredentials);
         Iterator<Bucket> buckets=s3Client.listBuckets().iterator();
         Boolean bucketExists=false;
@@ -31,18 +28,17 @@ public class AWSS3Exporter {
                 bucketExists=true;
             }
         }
-        if(bucketExists==false){
+        if(!bucketExists){
             s3Client.createBucket(bucketName);
         }
 
         File exportFile=new File(exportPath);
         try{
-            s3Client.putObject(bucketName,keyName,exportFile);
+            transferManager.upload(bucketName,keyName,exportFile);
         }catch (AmazonServiceException e){
             System.err.println(e.getErrorMessage());
             System.exit(1);
         }
-
+        return s3Client.getUrl(bucketName,keyName).toString();
     }
-
 }
