@@ -9,6 +9,8 @@ import com.amazonaws.services.s3.model.Bucket;
 import java.io.File;
 import java.util.Iterator;
 
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import org.mitre.synthea.helpers.LocalConfig;
 
@@ -34,7 +36,7 @@ public class AWSS3Exporter {
 
         File exportFile=new File(exportPath);
         try{
-            transferManager.upload(bucketName,keyName,exportFile);
+            transferManager.upload(new PutObjectRequest(bucketName,keyName,exportFile).withCannedAcl(CannedAccessControlList.PublicRead));
         }catch (AmazonServiceException e){
             System.err.println(e.getErrorMessage());
             System.exit(1);
