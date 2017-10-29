@@ -1,7 +1,5 @@
-# synthea_java [![Build Status](https://travis-ci.org/synthetichealth/synthea_java.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea_java)
-Java implementation of the Synthea engine.
-
-Partially implemented.
+# synthetic-patient-generator
+Rule Based Random Patient Data Generator
 
 - FHIR STU3 Export.
 - C-CDA R2.1 Export.
@@ -17,8 +15,6 @@ Partially implemented.
 ```
 
 # License
-
-Copyright 2017 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
