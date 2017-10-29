@@ -8,10 +8,9 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.LocalConfig;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.LifecycleModule;
-import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -48,13 +47,13 @@ public class CommunityHealthWorker extends Provider {
 	public static final String DEPLOYMENT_EMERGENCY = "emergency";
 	public static final String DEPLOYMENT_POSTDISCHARGE = "postdischarge";
 	
-	public static int cost = Integer.parseInt(Config.get("generate.chw.cost"));
-	public static int budget = Integer.parseInt(Config.get("generate.chw.budget"));
-	public static double community = Double.parseDouble(Config.get("generate.chw.community", "0.50"));
-	public static double emergency = Double.parseDouble(Config.get("generate.chw.emergency", "0.25"));
-	public static double postdischarge = Double.parseDouble(Config.get("generate.chw.postdischarge", "0.25"));
+	public static int cost = Integer.parseInt(LocalConfig.get("generate.chw.cost"));
+	public static int budget = Integer.parseInt(LocalConfig.get("generate.chw.budget"));
+	public static double community = Double.parseDouble(LocalConfig.get("generate.chw.community", "0.50"));
+	public static double emergency = Double.parseDouble(LocalConfig.get("generate.chw.emergency", "0.25"));
+	public static double postdischarge = Double.parseDouble(LocalConfig.get("generate.chw.postdischarge", "0.25"));
 
-	public static int yearIntroduced = Integer.parseInt(Config.get("generate.chw.year_introduced"));
+	public static int yearIntroduced = Integer.parseInt(LocalConfig.get("generate.chw.year_introduced"));
 	
 	public static Map<String,List<CommunityHealthWorker>> workers = generateWorkers();
 	
@@ -62,21 +61,21 @@ public class CommunityHealthWorker extends Provider {
 	{
 		// don't allow anyone else to instantiate this
 		
-		attributes.put(CommunityHealthWorker.ALCOHOL_SCREENING, Boolean.parseBoolean(Config.get("chw.alcohol_screening")));
-		attributes.put(CommunityHealthWorker.ASPIRIN_MEDICATION, Boolean.parseBoolean(Config.get("chw.aspirin_medication")));
-		attributes.put(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, Boolean.parseBoolean(Config.get("chw.blood_pressure_screening")));
-		attributes.put(CommunityHealthWorker.COLORECTAL_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.colorectal_cancer_screening")));
-		attributes.put(CommunityHealthWorker.DIABETES_SCREENING, Boolean.parseBoolean(Config.get("chw.diabetes_screening")));
-		attributes.put(CommunityHealthWorker.DIET_PHYSICAL_ACTIVITY, Boolean.parseBoolean(Config.get("chw.diet_physical_activity")));
-		attributes.put(CommunityHealthWorker.EXERCISE_PT_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.exercise_pt_injury_screening")));
-		attributes.put(CommunityHealthWorker.LUNG_CANCER_SCREENING, Boolean.parseBoolean(Config.get("chw.lung_cancer_screening")));
-		attributes.put(CommunityHealthWorker.OBESITY_SCREENING, Boolean.parseBoolean(Config.get("chw.obesity_screening")));
-		attributes.put(CommunityHealthWorker.OSTEOPOROSIS_SCREENING, Boolean.parseBoolean(Config.get("chw.osteoporosis_screening")));
-		attributes.put(CommunityHealthWorker.PREECLAMPSIA_ASPIRIN, Boolean.parseBoolean(Config.get("chw.preeclampsia_aspirin")));
-		attributes.put(CommunityHealthWorker.PREECLAMPSIA_SCREENING, Boolean.parseBoolean(Config.get("chw.preeclampsia_screening")));
-		attributes.put(CommunityHealthWorker.STATIN_MEDICATION, Boolean.parseBoolean(Config.get("chw.statin_medication")));
-		attributes.put(CommunityHealthWorker.TOBACCO_SCREENING, Boolean.parseBoolean(Config.get("chw.tobacco_screening")));
-		attributes.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, Boolean.parseBoolean(Config.get("chw.vitamin_d_injury_screening")));
+		attributes.put(CommunityHealthWorker.ALCOHOL_SCREENING, Boolean.parseBoolean(LocalConfig.get("chw.alcohol_screening")));
+		attributes.put(CommunityHealthWorker.ASPIRIN_MEDICATION, Boolean.parseBoolean(LocalConfig.get("chw.aspirin_medication")));
+		attributes.put(CommunityHealthWorker.BLOOD_PRESSURE_SCREENING, Boolean.parseBoolean(LocalConfig.get("chw.blood_pressure_screening")));
+		attributes.put(CommunityHealthWorker.COLORECTAL_CANCER_SCREENING, Boolean.parseBoolean(LocalConfig.get("chw.colorectal_cancer_screening")));
+		attributes.put(CommunityHealthWorker.DIABETES_SCREENING, Boolean.parseBoolean(LocalConfig.get("chw.diabetes_screening")));
+		attributes.put(CommunityHealthWorker.DIET_PHYSICAL_ACTIVITY, Boolean.parseBoolean(LocalConfig.get("chw.diet_physical_activity")));
+		attributes.put(CommunityHealthWorker.EXERCISE_PT_INJURY_SCREENING, Boolean.parseBoolean(LocalConfig.get("chw.exercise_pt_injury_screening")));
+		attributes.put(CommunityHealthWorker.LUNG_CANCER_SCREENING, Boolean.parseBoolean(LocalConfig.get("chw.lung_cancer_screening")));
+		attributes.put(CommunityHealthWorker.OBESITY_SCREENING, Boolean.parseBoolean(LocalConfig.get("chw.obesity_screening")));
+		attributes.put(CommunityHealthWorker.OSTEOPOROSIS_SCREENING, Boolean.parseBoolean(LocalConfig.get("chw.osteoporosis_screening")));
+		attributes.put(CommunityHealthWorker.PREECLAMPSIA_ASPIRIN, Boolean.parseBoolean(LocalConfig.get("chw.preeclampsia_aspirin")));
+		attributes.put(CommunityHealthWorker.PREECLAMPSIA_SCREENING, Boolean.parseBoolean(LocalConfig.get("chw.preeclampsia_screening")));
+		attributes.put(CommunityHealthWorker.STATIN_MEDICATION, Boolean.parseBoolean(LocalConfig.get("chw.statin_medication")));
+		attributes.put(CommunityHealthWorker.TOBACCO_SCREENING, Boolean.parseBoolean(LocalConfig.get("chw.tobacco_screening")));
+		attributes.put(CommunityHealthWorker.VITAMIN_D_INJURY_SCREENING, Boolean.parseBoolean(LocalConfig.get("chw.vitamin_d_injury_screening")));
 		
 		Location.assignCity(this);
 
@@ -203,7 +202,7 @@ public class CommunityHealthWorker extends Provider {
 		fallsPreventionVitaminD(person, time);
 		osteoporosisScreening(person, time);
 
-		double adherence_chw_delta = Double.parseDouble( Config.get("lifecycle.aherence.chw_delta", "0.3"));
+		double adherence_chw_delta = Double.parseDouble( LocalConfig.get("lifecycle.aherence.chw_delta", "0.3"));
 		double probability = (double) person.attributes.get(LifecycleModule.ADHERENCE_PROBABILITY);
 		probability += (adherence_chw_delta);
 		person.attributes.put(LifecycleModule.ADHERENCE_PROBABILITY, probability);
@@ -229,8 +228,8 @@ public class CommunityHealthWorker extends Provider {
 			
 			ct.codes.add(new Code("SNOMED-CT","171209009","Tobacco usage screening (procedure)"));
 
-			double quit_smoking_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_smoking.chw_delta", "0.3"));
-			double smoking_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_smoking.smoking_duration_factor_per_year", "1.0"));
+			double quit_smoking_chw_delta = Double.parseDouble( LocalConfig.get("lifecycle.quit_smoking.chw_delta", "0.3"));
+			double smoking_duration_factor_per_year = Double.parseDouble( LocalConfig.get("lifecycle.quit_smoking.smoking_duration_factor_per_year", "1.0"));
 			double probability = (double) person.attributes.get(LifecycleModule.QUIT_SMOKING_PROBABILITY);
 			int numberOfYearsSmoking = (int) person.ageInYears(time) - 15;
 			probability += (quit_smoking_chw_delta / (smoking_duration_factor_per_year * numberOfYearsSmoking));
@@ -274,8 +273,8 @@ public class CommunityHealthWorker extends Provider {
 			
 			ct.codes.add(new Code("SNOMED-CT","713107002","Screening for alcohol abuse (procedure)"));
 	
-			double quit_alcoholism_chw_delta = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.chw_delta", "0.3"));
-			double alcoholism_duration_factor_per_year = Double.parseDouble( Config.get("lifecycle.quit_alcoholism.alcoholism_duration_factor_per_year", "1.0"));
+			double quit_alcoholism_chw_delta = Double.parseDouble( LocalConfig.get("lifecycle.quit_alcoholism.chw_delta", "0.3"));
+			double alcoholism_duration_factor_per_year = Double.parseDouble( LocalConfig.get("lifecycle.quit_alcoholism.alcoholism_duration_factor_per_year", "1.0"));
 			
 			if(person.attributes.containsKey("cardio_risk")){
 				double cardioRisk = (double) person.attributes.get("cardio_risk");
@@ -352,7 +351,7 @@ public class CommunityHealthWorker extends Provider {
 			
 			ct.codes.add(new Code("SNOMED-CT","185665008","Blood pressure screening - first call (procedure)"));
 			
-			double blood_pressure_chw_delta = Double.parseDouble( Config.get("lifecycle.blood_pressure.chw_delta", "0.1"));
+			double blood_pressure_chw_delta = Double.parseDouble( LocalConfig.get("lifecycle.blood_pressure.chw_delta", "0.1"));
 
 			if(person.attributes.containsKey("cardio_risk")){
 				double cardioRisk = (double) person.attributes.get("cardio_risk");
@@ -392,7 +391,7 @@ public class CommunityHealthWorker extends Provider {
 			// only for adults who have CVD risk factors
 			// the exact threshold for CVD risk factors can be determined later
 			
-			double diet_physical_activity_chw_delta = Double.parseDouble( Config.get("lifecycle.diet_physical_activity.chw_delta", "0.1"));
+			double diet_physical_activity_chw_delta = Double.parseDouble( LocalConfig.get("lifecycle.diet_physical_activity.chw_delta", "0.1"));
 
 			if(person.attributes.containsKey("cardio_risk")){
 				if( person.attributes.get(Person.GENDER).equals("M") && (double)person.attributes.get("cardio_risk") > .0000002){
@@ -472,7 +471,7 @@ public class CommunityHealthWorker extends Provider {
 			
 			ct.codes.add(new Code("SNOMED-CT","268551005","Obesity screening (procedure)"));
 			
-			double obesity_chw_delta = Double.parseDouble( Config.get("lifecycle.obesity_screening.chw_delta", "0.1"));
+			double obesity_chw_delta = Double.parseDouble( LocalConfig.get("lifecycle.obesity_screening.chw_delta", "0.1"));
 
 			if(person.attributes.containsKey("cardio_risk")){
 				double cardioRisk = (double) person.attributes.get("cardio_risk");
@@ -526,7 +525,7 @@ public class CommunityHealthWorker extends Provider {
 			
 			ct.codes.add(new Code("SNOMED-CT","431463004","Administration of aspirin (procedure)"));
 			
-			double aspirin_chw_delta = Double.parseDouble( Config.get("lifecycle.aspirin_medication.chw_delta", "0.1"));
+			double aspirin_chw_delta = Double.parseDouble( LocalConfig.get("lifecycle.aspirin_medication.chw_delta", "0.1"));
 
 			if(person.attributes.containsKey("cardio_risk")){
 				double cardioRisk = (double) person.attributes.get("cardio_risk");
@@ -578,7 +577,7 @@ public class CommunityHealthWorker extends Provider {
 			
 			ct.codes.add(new Code("SNOMED-CT","414981001","Over the counter statin therapy (procedure)"));
 			
-			double statin_chw_delta = Double.parseDouble( Config.get("lifecycle.statin_medication.chw_delta", "0.1"));
+			double statin_chw_delta = Double.parseDouble( LocalConfig.get("lifecycle.statin_medication.chw_delta", "0.1"));
 
 			if(person.attributes.containsKey("cardio_risk")){
 				double cardioRisk = (double) person.attributes.get("cardio_risk");

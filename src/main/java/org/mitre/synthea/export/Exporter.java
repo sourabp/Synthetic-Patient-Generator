@@ -12,7 +12,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 import org.mitre.synthea.engine.Generator;
-import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.LocalConfig;
 import org.mitre.synthea.world.agents.Person;
 
 public abstract class Exporter 
@@ -27,7 +27,7 @@ public abstract class Exporter
 	public static void export(Person person, long stopTime)
 	{
 		// TODO: filter for export
-		if (Boolean.parseBoolean(Config.get("exporter.fhir.export")))
+		if (Boolean.parseBoolean(LocalConfig.get("exporter.fhir.export")))
 		{
 			String bundleJson = FhirStu3.convertToFHIR(person, stopTime);
 			
@@ -42,7 +42,7 @@ public abstract class Exporter
 				e.printStackTrace();
 			}
 		}
-		if (Boolean.parseBoolean(Config.get("exporter.ccda.export")))
+		if (Boolean.parseBoolean(LocalConfig.get("exporter.ccda.export")))
 		{
 			String ccdaXml = CCDAExporter.export(person, stopTime);
 			
@@ -65,17 +65,19 @@ public abstract class Exporter
 	 * 
 	 * @param generator Generator that generated the patients
 	 */
-	public static void runPostCompletionExports(Generator generator)
+	public static String runPostCompletionExports(Generator generator)
 	{
-	    File outputDirectory=new File(Config.get("exporter.baseDirectory"));
+	    File outputDirectory=new File(LocalConfig.get("exporter.baseDirectory"));
         ZipUtils zipper=new ZipUtils(outputDirectory);
-        String zippedOutputLocation=Config.get("exporter.zippedOutputLocation");
+        String zippedOutputLocation= LocalConfig.get("exporter.zippedOutputLocation");
         zipper.zipIt(zippedOutputLocation);
         try {
             FileUtils.deleteDirectory(outputDirectory);
         }catch (java.io.IOException e){
             e.printStackTrace();
         }
+        String awsUrl=AWSS3Exporter.export(zippedOutputLocation);
+        return awsUrl;
 	}
 	
 	public static File getOutputFolder(String folderName, Person person)
@@ -84,7 +86,7 @@ public abstract class Exporter
 		
 		folders.add(folderName);
 		
-		if (person != null && Boolean.parseBoolean(Config.get("exporter.subfolders_by_id_substring")))
+		if (person != null && Boolean.parseBoolean(LocalConfig.get("exporter.subfolders_by_id_substring")))
 		{
 			String id = (String)person.attributes.get(Person.ID);
 			
@@ -92,7 +94,7 @@ public abstract class Exporter
 			folders.add(id.substring(0, 3));
 		}
 		
-		String baseDirectory = Config.get("exporter.baseDirectory");
+		String baseDirectory = LocalConfig.get("exporter.baseDirectory");
 		
 		File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
 		f.mkdirs();
@@ -102,7 +104,7 @@ public abstract class Exporter
 	
 	public static String filename(Person person, String extension)
 	{
-		if (Boolean.parseBoolean(Config.get("exporter.use_uuid_filenames")))
+		if (Boolean.parseBoolean(LocalConfig.get("exporter.use_uuid_filenames")))
 		{
 			return person.attributes.get(Person.ID) + "." + extension;
 		} else

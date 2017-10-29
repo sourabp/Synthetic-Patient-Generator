@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.LocalConfig;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.world.agents.Person;
 
@@ -156,8 +156,8 @@ public class Demographics
 	{
 		// simple linear formula just maps federal poverty level to 0.0 and 75,000 to 1.0
 		// 75,000 chosen based on https://www.princeton.edu/~deaton/downloads/deaton_kahneman_high_income_improves_evaluation_August2010.pdf
-		double poverty = Double.parseDouble( Config.get("generate.demographics.socioeconomic.income.poverty", "11000") );
-		double high = Double.parseDouble( Config.get("generate.demographics.socioeconomic.income.high", "75000") );
+		double poverty = Double.parseDouble( LocalConfig.get("generate.demographics.socioeconomic.income.poverty", "11000") );
+		double high = Double.parseDouble( LocalConfig.get("generate.demographics.socioeconomic.income.high", "75000") );
 
 		if(income >= high) {
 			return 1.0;
@@ -197,17 +197,17 @@ public class Demographics
 
 	public double socioeconomicScore(double income, double education, double occupation)
 	{
-		double incomeWeight = Double.parseDouble( Config.get("generate.demographics.socioeconomic.weights.income") );
-		double educationWeight = Double.parseDouble( Config.get("generate.demographics.socioeconomic.weights.education") );
-		double occupationWeight = Double.parseDouble( Config.get("generate.demographics.socioeconomic.weights.occupation") );
+		double incomeWeight = Double.parseDouble( LocalConfig.get("generate.demographics.socioeconomic.weights.income") );
+		double educationWeight = Double.parseDouble( LocalConfig.get("generate.demographics.socioeconomic.weights.education") );
+		double occupationWeight = Double.parseDouble( LocalConfig.get("generate.demographics.socioeconomic.weights.occupation") );
 
 		return (income * incomeWeight) + (education * educationWeight) + (occupation * occupationWeight);
 	}
 
 	public String socioeconomicCategory(double score)
 	{
-		double highScore = Double.parseDouble( Config.get("generate.demographics.socioeconomic.score.high") );
-		double middleScore = Double.parseDouble( Config.get("generate.demographics.socioeconomic.score.middle") );
+		double highScore = Double.parseDouble( LocalConfig.get("generate.demographics.socioeconomic.score.high") );
+		double middleScore = Double.parseDouble( LocalConfig.get("generate.demographics.socioeconomic.score.middle") );
 
 		if(score >= highScore) {
 			return "High";
@@ -244,7 +244,6 @@ public class Demographics
 		// wrap the json in a "demographicsFile" property so gson can parse it
 		json = "{ \"demographicsFile\" : " + json + " }";
 		Gson gson = new Gson();
-		
 		DemographicsFile parsed = gson.fromJson(json, DemographicsFile.class);
 
 		return parsed.demographicsFile;

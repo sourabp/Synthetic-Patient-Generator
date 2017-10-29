@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.mitre.synthea.engine.Generator;
-import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.LocalConfig;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -62,9 +62,9 @@ public class ReportExporter
 	private static void reportParameters(JsonWriter writer) throws IOException
 	{
 		writer.name("run-parameters").beginObject();
-		for (String key : Config.allPropertyNames())
+		for (String key : LocalConfig.allPropertyNames())
 		{
-			writer.name(key).value(Config.get(key, ""));
+			writer.name(key).value(LocalConfig.get(key, ""));
 		}
 		writer.endObject(); // run-parameters
 	}

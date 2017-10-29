@@ -1,14 +1,7 @@
 package org.mitre.synthea.engine;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +10,7 @@ import java.util.stream.Collectors;
 
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.Exporter;
-import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.LocalConfig;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
@@ -44,28 +37,29 @@ public class Generator {
 	public long timestep;
 	public long stop;
 	public Map<String,AtomicInteger> stats;
-	public Map<String,Demographics> demographics;
+	public Map<String,Demographics> demographics=new HashMap<String, Demographics>();
 	private String logLevel;
 	
 	public Generator() throws IOException
 	{
-		int population = Integer.parseInt( Config.get("generate.default_population", "1") );
+		int population = Integer.parseInt( LocalConfig.get("generate.default_population", "1") );
 		init(population, System.currentTimeMillis());
 	}
-	
+	public Generator(int population, String demographicConfigString) throws IOException{
+		this.demographics = Demographics.loadByContent(demographicConfigString);
+		init(population,System.currentTimeMillis());
+	}
 	public Generator(int population) throws IOException
 	{
 		init(population, System.currentTimeMillis());
 	}
-	
 	public Generator(int population, long seed) throws IOException
 	{
 		init(population, seed);
 	}
-	
 	private void init(int population, long seed) throws IOException
 	{
-		String dbType = Config.get("generate.database_type");
+		String dbType = LocalConfig.get("generate.database_type");
 		
 		switch(dbType)
 		{
@@ -86,10 +80,13 @@ public class Generator {
 		this.chws = Collections.synchronizedList(new ArrayList<CommunityHealthWorker>());
 		this.seed = seed;
 		this.random = new Random(seed);
-		this.timestep = Long.parseLong( Config.get("generate.timestep") );
+		this.timestep = Long.parseLong( LocalConfig.get("generate.timestep") );
 		this.stop = System.currentTimeMillis();
-		this.demographics = Demographics.loadByName( Config.get("generate.demographics.default_file") );
-		this.logLevel = Config.get("generate.log_patients.detail", "simple");
+		if(this.demographics.isEmpty()){
+			this.demographics = Demographics.loadByName( LocalConfig.get("generate.demographics.default_file"));
+		}
+
+		this.logLevel = LocalConfig.get("generate.log_patients.detail", "simple");
 		
 		this.stats = Collections.synchronizedMap(new HashMap<String,AtomicInteger>());
 		stats.put("alive", new AtomicInteger(0));
@@ -101,8 +98,7 @@ public class Generator {
 		CommunityHealthWorker.workers.size(); // ensure CHWs are set early
 		Costs.loadCostData();
 	}
-	
-	public void run()
+	public String run()
 	{		
 		ExecutorService threadPool = Executors.newFixedThreadPool(8);
 		
@@ -135,10 +131,8 @@ public class Generator {
 					.collect(Collectors.toList());
 			database.store(chws);
 		}
-		
-		Exporter.runPostCompletionExports(this);
-		
-		System.out.println(stats);
+		String url=Exporter.runPostCompletionExports(this);
+		return url;
 	}
 	
 	
@@ -148,7 +142,8 @@ public class Generator {
 		try 
 		{
 			boolean isAlive = true;
-			String cityName = Location.randomCityName(random);
+			//TODO HardCoding CityName
+			String cityName = "Dedham";
 			Demographics city = demographics.get(cityName);
 			if (city == null && cityName.endsWith(" Town"))
 			{

@@ -14,3 +14,19 @@ bin/**
 # H2 database files
 **/*.mv.db
 **/*.trace.db
+.idea/libraries/Gradle__com_amazonaws_aws_java_sdk_core_1_10_77.xml
+.idea/libraries/Gradle__com_amazonaws_aws_java_sdk_kms_1_10_77.xml
+.idea/libraries/Gradle__com_amazonaws_aws_java_sdk_s3_1_10_77.xml
+.idea/libraries/Gradle__com_fasterxml_jackson_dataformat_jackson_dataformat_cbor_2_5_3.xml
+.idea/libraries/Gradle__com_typesafe_config_1_3_2.xml
+.idea/libraries/Gradle__commons_io_commons_io_2_4.xml
+.idea/libraries/Gradle__commons_logging_commons_logging_1_2.xml
+.idea/libraries/Gradle__joda_time_joda_time_2_8_1.xml
+.idea/modules/synthetic_patient_generator.iml
+.idea/modules/synthetic_patient_generator_main.iml
+.idea/modules/synthetic_patient_generator_test.iml
+/out/
+/.idea
+/.travis.yml
+
+

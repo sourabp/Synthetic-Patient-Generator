@@ -13,7 +13,7 @@ import org.eclipse.mdht.uml.cda.util.CDAUtil;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
-import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.LocalConfig;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -25,7 +25,7 @@ public class CCDAExporterTest {
     {
         CDAUtil.loadPackages();
     	TestHelper.exportOff();
-    	Config.set("exporter.ccda.export", "true");
+    	LocalConfig.set("exporter.ccda.export", "true");
     	
     	List<String> validationErrors = new ArrayList<String>();
     	

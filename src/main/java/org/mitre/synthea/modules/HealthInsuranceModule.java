@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.mitre.synthea.engine.Module;
-import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.LocalConfig;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
@@ -25,11 +25,11 @@ public class HealthInsuranceModule extends Module
 	public double medicaid_level;
 	
 	public HealthInsuranceModule() {
-		int mandate_year = Integer.parseInt( Config.get("generate.insurance.mandate.year", "2006") );
+		int mandate_year = Integer.parseInt( LocalConfig.get("generate.insurance.mandate.year", "2006") );
 		mandate_time = Utilities.convertCalendarYearsToTime(mandate_year);
-		mandate_occupation = Double.parseDouble( Config.get("generate.insurance.mandate.occupation", "0.2") );
-		private_income_threshold = Integer.parseInt( Config.get("generate.insurance.private.minimum_income", "24000") );
-		poverty_level = Double.parseDouble( Config.get("generate.demographics.socioeconomic.income.poverty","11000") );
+		mandate_occupation = Double.parseDouble( LocalConfig.get("generate.insurance.mandate.occupation", "0.2") );
+		private_income_threshold = Integer.parseInt( LocalConfig.get("generate.insurance.private.minimum_income", "24000") );
+		poverty_level = Double.parseDouble( LocalConfig.get("generate.demographics.socioeconomic.income.poverty","11000") );
 		medicaid_level = 1.33 * poverty_level;
 	}
 	
