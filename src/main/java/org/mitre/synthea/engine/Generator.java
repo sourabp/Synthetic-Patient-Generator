@@ -47,17 +47,6 @@ public class Generator {
 	}
 	public Generator(int population, String demographicConfigString) throws IOException{
 		this.demographics = Demographics.loadByContent(demographicConfigString);
-		System.out.println(this.demographics.isEmpty());
-		Collection<Demographics> x= demographics.values();
-		Demographics y =x.iterator().next();
-		System.out.println(y.ages);
-		System.out.println(y.education);
-		System.out.println(y.gender);
-		System.out.println(y.income);
-		System.out.println(y.race);
-		System.out.println(y.county);
-		System.out.println(y.population);
-		System.out.println(y.state);
 		init(population,System.currentTimeMillis());
 	}
 	public Generator(int population) throws IOException
@@ -258,7 +247,6 @@ public class Generator {
 	
 	private long setDemographics(Person person, String cityName, Demographics city)
 	{
-		System.out.println(city.toString());
 		person.attributes.put(Person.CITY, cityName);
 
 		String race = city.pickRace(person.random);

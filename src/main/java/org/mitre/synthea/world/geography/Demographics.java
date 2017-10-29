@@ -231,7 +231,6 @@ public class Demographics
 		// read all text into a string
 		String json = new BufferedReader(new InputStreamReader(stream)).lines()
 				   .collect(Collectors.joining("\n"));
-		System.out.println(json);
 		return loadByContent(json);
 	}
 	
@@ -245,7 +244,6 @@ public class Demographics
 		// wrap the json in a "demographicsFile" property so gson can parse it
 		json = "{ \"demographicsFile\" : " + json + " }";
 		Gson gson = new Gson();
-		System.out.println(json);
 		DemographicsFile parsed = gson.fromJson(json, DemographicsFile.class);
 
 		return parsed.demographicsFile;

@@ -127,8 +127,7 @@ public class Location {
 		} else
 		{
 			cityFeature = featuresByName.get(cityName);
-			System.out.println("CityFeature"+featuresByName);
-			
+
 			if (cityFeature == null)
 			{
 				cityFeature = featuresByName.get(cityName + " Town");
